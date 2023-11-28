@@ -15,7 +15,7 @@ FinanzasApp es una aplicación de gestión financiera que te permite registrar t
 
 ## Instalación
 
-1. Clona este repositorio: `git clone https://github.com/tuusuario/FinanzasApp.git`
+1. Clona este repositorio: `git clone https://github.com/Dunel/FinanzasApp.git`
 2. Instala las dependencias: `npm install`
 3. Ejecuta la aplicación: `npm start`
 
