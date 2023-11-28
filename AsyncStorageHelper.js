@@ -65,9 +65,42 @@ const updateCategoryInAsyncStorage = async (updatedCategories) => {
   }
 };
 
+const saveSalaryToAsyncStorage = async (salary) => {
+  const salaryKey = "salary";
+
+  try {
+    await AsyncStorage.setItem(salaryKey, JSON.stringify(salary));
+    console.log("Sueldo guardado con exito: ", salary);
+  } catch (error) {
+    console.error("Error al guardar el sueldo: ", error);
+  }
+};
+
+const getSalaryFromAsyncStorage = async () => {
+  const salaryKey = "salary";
+
+  try {
+    const salaryJSON = await AsyncStorage.getItem(salaryKey);
+
+    if (salaryJSON) {
+      const salary = JSON.parse(salaryJSON);
+      console.log("Sueldo obtenido :", salary);
+      return salary;
+    } else {
+      console.log("No se encontró un sueldo almacenado.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error al obtener el sueldo desde AsyncStorage:", error);
+    return null;
+  }
+};
+
 export {
   saveCategoryToAsyncStorage,
   getCategoriesFromAsyncStorage,
   clearAllDataInAsyncStorage,
   updateCategoryInAsyncStorage,
+  saveSalaryToAsyncStorage,
+  getSalaryFromAsyncStorage,
 };

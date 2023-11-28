@@ -1,0 +1,41 @@
+# FinanzasApp
+
+FinanzasApp es una aplicación de gestión financiera que te permite registrar tus ingresos, realizar un seguimiento de tus gastos y tomar el control total de tus transacciones financieras.
+
+## Funcionalidades
+
+- **Dashboard:** Visualiza un resumen financiero que incluye el total gastado y tu presupuesto mensual.
+- **Categorías:** Organiza tus gastos en diferentes categorías para un mejor seguimiento.
+- **Agregar Gastos:** Registra tus gastos fácilmente, especificando la categoría, subnombre y monto.
+- **Configuración:** Actualiza tu salario, reinicia datos y realiza otras configuraciones.
+
+## Capturas de Pantalla
+
+<!-- MUY PRONTO POR VENEVISION -->
+
+## Instalación
+
+1. Clona este repositorio: `git clone https://github.com/tuusuario/FinanzasApp.git`
+2. Instala las dependencias: `npm install`
+3. Ejecuta la aplicación: `npm start`
+
+## Configuración
+
+En la pantalla de configuración, puedes actualizar tu salario mensual, gestionar categorías y reiniciar datos si es necesario.
+
+## Tecnologías Utilizadas
+
+- React Native
+- AsyncStorage para almacenamiento local
+- React Navigation para la navegación entre pantallas
+- Otros...
+
+## Contribuir
+
+Si deseas contribuir a este proyecto, sigue estos pasos:
+
+1. Haz un fork del repositorio
+2. Crea una nueva rama: `git checkout -b feature/nueva-caracteristica`
+3. Realiza tus cambios y haz commit: `git commit -m 'Agrega nueva característica'`
+4. Envía tus cambios: `git push origin feature/nueva-caracteristica`
+5. Abre un pull request

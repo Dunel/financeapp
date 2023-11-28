@@ -4,13 +4,16 @@ import { Input, ListItem, Icon, Avatar } from "react-native-elements";
 import {
   getCategoriesFromAsyncStorage,
   updateCategoryInAsyncStorage,
+  clearAllDataInAsyncStorage,
+  saveSalaryToAsyncStorage,
+  getSalaryFromAsyncStorage,
 } from "../AsyncStorageHelper";
 
-const AddExpense = ({ navigation }) => {
+const Settings = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [subname, setSubname] = useState("");
-  const [amount, setAmount] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [salary, setSalary] = useState("0");
   const [expanded, setExpanded] = useState(false);
 
   let focusListener = null;
@@ -20,46 +23,55 @@ const AddExpense = ({ navigation }) => {
     setCategories(categories);
   }
 
-  useEffect(() => {
-    focusListener = navigation.addListener("focus", () => {
-      fetchCategories();
-    });
-    return function cleanUp() {
-      focusListener.remove();
-    };
-  }, []);
-
-  const handleSaveExpense = async () => {
-    if (!selectedCategory) {
-      alert("Selecciona una categoría antes de guardar el gasto.");
+  const handleSaveSalary = async () => {
+    const parsedSalary = parseFloat(salary);
+    if (isNaN(parsedSalary)) {
+      alert("Por favor, ingresa un sueldo válido.");
       return;
     }
 
-    const newExpense = {
-      subname,
-      amount: parseFloat(amount),
-      date: new Date(),
-    };
+    await saveSalaryToAsyncStorage(parsedSalary);
+    alert("Sueldo guardado exitosamente.");
+  };
 
-    const updatedCategories = [...categories];
-
-    const selectedCategoryIndex = updatedCategories.findIndex(
-      (category) => category.name === selectedCategory
-    );
-
-    if (selectedCategoryIndex !== -1) {
-      updatedCategories[selectedCategoryIndex].expenses.push(newExpense);
-
-      await updateCategoryInAsyncStorage(updatedCategories);
-
-      setSubname("");
-      setAmount("");
+  async function fetchSalary() {
+    const storedSalary = await getSalaryFromAsyncStorage();
+    if (storedSalary !== null) {
+      setSalary(storedSalary.toString());
     }
+  }
+
+  useEffect(() => {
+    focusListener = navigation.addListener("focus", () => {
+      fetchCategories();
+      fetchSalary();
+    });
+
+    return function cleanUp() {
+      focusListener.remove();
+    };
+  }, [navigation]);
+
+  const handleUpdateCategory = async () => {
+    const updatedCategories = categories.map((category) => {
+      if (category.id === parseInt(selectedCategory)) {
+        category.name = newCategoryName;
+      }
+      return category;
+    });
+
+    await updateCategoryInAsyncStorage(updatedCategories);
+
+    setNewCategoryName("");
+  };
+
+  const handleClearData = () => {
+    clearAllDataInAsyncStorage();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Agregar Gasto</Text>
+      <Text style={styles.title}>Actualizar Categoría</Text>
       <ListItem.Accordion
         content={
           <>
@@ -76,7 +88,7 @@ const AddExpense = ({ navigation }) => {
           <ListItem
             key={category.id}
             onPress={() => {
-              setSelectedCategory(category.name);
+              setSelectedCategory(category.id);
               setExpanded(false);
             }}
             bottomDivider
@@ -85,24 +97,28 @@ const AddExpense = ({ navigation }) => {
             <ListItem.Content>
               <ListItem.Title>{category.name}</ListItem.Title>
             </ListItem.Content>
-            {selectedCategory === category.name && <ListItem.Chevron />}
+            {selectedCategory === category.id && <ListItem.Chevron />}
           </ListItem>
         ))}
       </ListItem.Accordion>
       <Input
         style={styles.input}
-        placeholder="Subnombre del gasto"
-        value={subname}
-        onChangeText={(text) => setSubname(text)}
+        placeholder="Nuevo nombre de la categoría"
+        value={newCategoryName}
+        onChangeText={(text) => setNewCategoryName(text)}
       />
+      <Button title="Actualizar" onPress={handleUpdateCategory} />
+      <Text style={styles.title}>Actualizar Sueldo</Text>
       <Input
         style={styles.input}
-        placeholder="Monto"
-        value={amount}
-        onChangeText={(text) => setAmount(text)}
+        placeholder="Sueldo"
         keyboardType="numeric"
+        value={salary}
+        onChangeText={(text) => setSalary(text)}
       />
-      <Button title="Guardar Gasto" onPress={handleSaveExpense} />
+      <Button title="Guardar Sueldo" onPress={handleSaveSalary} />
+      <Text style={styles.title}>Reiniciar Datos</Text>
+      <Button title="Reiniciar" onPress={handleClearData} />
     </View>
   );
 };
@@ -127,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddExpense;
+export default Settings;
